@@ -17,7 +17,7 @@ const AddSales: React.FC = () => {
   const totalHarga = selectedProduct ? selectedProduct.harga * jumlah : 0;
 
   useEffect(() => {
-    fetch("/api/product")
+    fetch(`${import.meta.env.VITE_API_BASE}/api/product`)
       .then(res => res.json())
       .then(data => setProducts(data));
   }, []);
@@ -27,7 +27,7 @@ const AddSales: React.FC = () => {
 
     if (!selectedProductId || jumlah <= 0) return alert("Lengkapi data");
 
-    const res = await fetch("/api/sales", {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE}/api/sales`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

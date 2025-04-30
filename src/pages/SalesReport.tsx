@@ -13,7 +13,7 @@ const SalesReport: React.FC = () => {
   const [sales, setSales] = useState<Sale[]>([]);
 
   useEffect(() => {
-    fetch("/api/sales")
+    fetch(`${import.meta.env.VITE_API_BASE}/api/sales`)
       .then(res => res.json())
       .then(data => setSales(data));
   }, []);

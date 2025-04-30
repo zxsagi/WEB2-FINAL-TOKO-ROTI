@@ -14,7 +14,7 @@ const EditProduct: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/product/${id}`)
+    fetch(`${import.meta.env.VITE_API_BASE}/api/product`)
       .then((res) => res.json())
       .then((data) =>
         setForm({
@@ -30,7 +30,7 @@ const EditProduct: React.FC = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`/api/product/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/api/product/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

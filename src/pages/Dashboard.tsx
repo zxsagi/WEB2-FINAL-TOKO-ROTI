@@ -9,7 +9,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resProduk = await fetch("/api/product");
+      const resProduk = await fetch(`${import.meta.env.VITE_API_BASE}/api/product`);
       const dataProduk = await resProduk.json();
 
       const totalStok = dataProduk.reduce(
@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
         0
       );
 
-      const resPenjualan = await fetch("/api/sales/total");
+      const resPenjualan = await fetch(`${import.meta.env.VITE_API_BASE}/api/sales/total`);
       const dataPenjualan = await resPenjualan.json();
 
       setSummary({

@@ -6,7 +6,7 @@ const Product: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchData = () => {
-    fetch("/api/product")
+    fetch(`${import.meta.env.VITE_API_BASE}/api/product`)
       .then(res => res.json())
       .then(data => setProducts(data));
   };
@@ -17,7 +17,7 @@ const Product: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (confirm("Yakin ingin menghapus produk ini?")) {
-      await fetch(`/api/product/${id}`, { method: "DELETE" });
+      await fetch(`${import.meta.env.VITE_API_BASE}/api/product/${id}`, { method: "DELETE" });
       fetchData();
     }
   };
