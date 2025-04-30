@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "../utils/AxiosInstance";
 
 const EditProduct: React.FC = () => {
   const { id } = useParams();
@@ -14,15 +15,14 @@ const EditProduct: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE}/api/product`)
-      .then((res) => res.json())
-      .then((data) =>
+    axios.get(`/api/product/${id}`)
+      .then((res) => {
         setForm({
-          nama_produk: data.nama_produk,
-          harga: data.harga,
-          stok: data.stok,
-        })
-      )
+          nama_produk: res.data.nama_produk,
+          harga: res.data.harga,
+          stok: res.data.stok,
+        });
+      })
       .catch(() => setError("Gagal memuat data produk."));
   }, [id]);
 
@@ -30,42 +30,28 @@ const EditProduct: React.FC = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/api/product/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nama_produk: form.nama_produk,
-          harga: Number(form.harga),
-          stok: Number(form.stok),
-        }),
+      await axios.put(`/api/product/${id}`, {
+        nama_produk: form.nama_produk,
+        harga: Number(form.harga),
+        stok: Number(form.stok),
       });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Gagal memperbarui produk");
-      }
-
-      
 
       navigate("/products");
     } catch (err: any) {
-      setError(err.message);
+      setError("Gagal memperbarui produk");
     }
   };
 
   return (
     <div className="p-6 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Edit Produk</h1>
-
       {error && <p className="text-red-500 mb-2">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           value={form.nama_produk}
-          onChange={(e) =>
-            setForm({ ...form, nama_produk: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, nama_produk: e.target.value })}
           className="w-full p-2 border rounded"
           placeholder="Nama Produk"
           required
