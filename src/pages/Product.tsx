@@ -17,7 +17,7 @@ const Product: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (confirm("Yakin ingin menghapus produk ini?")) {
-      await fetch(`${import.meta.env.VITE_API_BASE}/api/product/${id}`, { method: "DELETE" });
+      await fetch("/api/product/${id}", { method: "DELETE" });
       fetchData();
     }
   };

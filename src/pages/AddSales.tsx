@@ -27,7 +27,7 @@ const AddSales: React.FC = () => {
 
     if (!selectedProductId || jumlah <= 0) return alert("Lengkapi data");
 
-    const res = await fetch(`${import.meta.env.VITE_API_BASE}/api/sales`, {
+    const res = await fetch("/api/sales", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
