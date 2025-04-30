@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "../utils/AxiosInstance";
 
 interface Sale {
   tanggal: string;
@@ -13,9 +14,7 @@ const SalesReport: React.FC = () => {
   const [sales, setSales] = useState<Sale[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE}/api/sales`)
-      .then(res => res.json())
-      .then(data => setSales(data));
+    axios.get("/api/sales").then((res) => setSales(res.data));
   }, []);
 
   return (
@@ -33,10 +32,14 @@ const SalesReport: React.FC = () => {
         <tbody>
           {sales.map((sale, i) => (
             <tr key={i} className="text-center">
-              <td className="border p-2">{new Date(sale.tanggal).toLocaleDateString()}</td>
+              <td className="border p-2">
+                {new Date(sale.tanggal).toLocaleDateString()}
+              </td>
               <td className="border p-2">{sale.produk.nama_produk}</td>
               <td className="border p-2">{sale.jumlah}</td>
-              <td className="border p-2">Rp {sale.total_harga.toLocaleString()}</td>
+              <td className="border p-2">
+                Rp {sale.total_harga.toLocaleString()}
+              </td>
             </tr>
           ))}
         </tbody>
