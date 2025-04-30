@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../utils/AxiosInstance";
 
 interface Product {
   id: number;
@@ -13,35 +14,26 @@ const AddSales: React.FC = () => {
   const [jumlah, setJumlah] = useState<number>(1);
   const navigate = useNavigate();
 
-  const selectedProduct = products.find(p => p.id === selectedProductId);
+  const selectedProduct = products.find((p) => p.id === selectedProductId);
   const totalHarga = selectedProduct ? selectedProduct.harga * jumlah : 0;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE}/api/product`)
-      .then(res => res.json())
-      .then(data => setProducts(data));
+    axios.get("/api/product").then((res) => setProducts(res.data));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!selectedProductId || jumlah <= 0) return alert("Lengkapi data");
 
-    const res = await fetch("/api/sales", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      await axios.post("/api/sales", {
         id_produk: selectedProductId,
         jumlah,
-      }),
-    });
-
-    if (res.ok) {
+      });
       alert("Transaksi berhasil disimpan!");
       navigate("/sales-report");
-    } else {
-      const err = await res.text();
-      alert("Gagal menyimpan transaksi: " + err);
+    } catch (err: any) {
+      alert("Gagal menyimpan transaksi: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -51,12 +43,12 @@ const AddSales: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <select
           value={selectedProductId}
-          onChange={e => setSelectedProductId(Number(e.target.value))}
+          onChange={(e) => setSelectedProductId(Number(e.target.value))}
           className="w-full border p-2 rounded"
           required
         >
           <option value="">-- Pilih Produk --</option>
-          {products.map(p => (
+          {products.map((p) => (
             <option key={p.id} value={p.id}>
               {p.nama_produk} - Rp {p.harga}
             </option>
@@ -66,7 +58,7 @@ const AddSales: React.FC = () => {
           type="number"
           value={jumlah}
           min="1"
-          onChange={e => setJumlah(Number(e.target.value))}
+          onChange={(e) => setJumlah(Number(e.target.value))}
           className="w-full border p-2 rounded"
           placeholder="Jumlah"
           required
