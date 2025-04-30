@@ -9,10 +9,13 @@ export default defineConfig({
         tailwindcss()
         
     ],
+    build: {
+      outDir: 'dist',
+    },
     server: {
         proxy: {
           '/api': {
-            target: 'http://localhost:3000', // alamat backend NestJS
+            target: 'https://backend-web-2-final-toko-roti.vercel.app', // alamat backend NestJS
             changeOrigin: true,
             secure: false,
           },
