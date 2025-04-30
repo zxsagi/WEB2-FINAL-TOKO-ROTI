@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "../utils/AxiosInstance";
 
 const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState({
@@ -9,22 +10,25 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resProduk = await fetch(`${import.meta.env.VITE_API_BASE}/api/product`);
-      const dataProduk = await resProduk.json();
+      try {
+        const [resProduk, resPenjualan] = await Promise.all([
+          axios.get("/api/product"),
+          axios.get("/api/sales/total"),
+        ]);
 
-      const totalStok = dataProduk.reduce(
-        (sum: number, p: any) => sum + p.stok,
-        0
-      );
+        const totalStok = resProduk.data.reduce(
+          (sum: number, p: any) => sum + p.stok,
+          0
+        );
 
-      const resPenjualan = await fetch(`${import.meta.env.VITE_API_BASE}/api/sales/total`);
-      const dataPenjualan = await resPenjualan.json();
-
-      setSummary({
-        totalProduk: dataProduk.length,
-        totalStok,
-        totalPenjualan: dataPenjualan.total || 0,
-      });
+        setSummary({
+          totalProduk: resProduk.data.length,
+          totalStok,
+          totalPenjualan: resPenjualan.data.total || 0,
+        });
+      } catch (err) {
+        console.error("Gagal memuat ringkasan dashboard", err);
+      }
     };
 
     fetchData();
