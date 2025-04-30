@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "../utils/AxiosInstance";
 
 const Product: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const fetchData = () => {
-    fetch(`${import.meta.env.VITE_API_BASE}/api/product`)
-      .then(res => res.json())
-      .then(data => setProducts(data));
+    axios.get("/api/product").then((res) => setProducts(res.data));
   };
 
   useEffect(() => {
@@ -17,7 +16,7 @@ const Product: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (confirm("Yakin ingin menghapus produk ini?")) {
-      await fetch(`/api/product/${id}`, { method: "DELETE" });
+      await axios.delete(`/api/product/${id}`);
       fetchData();
     }
   };
@@ -26,7 +25,12 @@ const Product: React.FC = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-4xl font-bold text-amber-600">Manajemen Produk</h1>
-        <Link to="/add-product" className="bg-blue-500 hover:bg-fuchsia-400 text-white px-4 py-2 rounded">Tambah Produk</Link>
+        <Link
+          to="/add-product"
+          className="bg-blue-500 hover:bg-fuchsia-400 text-white px-4 py-2 rounded"
+        >
+          Tambah Produk
+        </Link>
       </div>
       <table className="w-full border shadow-lg rounded-lg overflow-hidden">
         <thead>
@@ -38,14 +42,24 @@ const Product: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {products.map(p => (
+          {products.map((p) => (
             <tr key={p.id} className="text-center">
               <td className="border p-2">{p.nama_produk}</td>
               <td className="border p-2">Rp {p.harga}</td>
               <td className="border p-2">{p.stok}</td>
               <td className="border p-2 space-x-2">
-                <button onClick={() => navigate(`/edit-product/${p.id}`)} className="bg-yellow-400 px-3 py-1 hover:bg-fuchsia-400 text-white rounded">Edit</button>
-                <button onClick={() => handleDelete(p.id)} className="bg-red-500 px-3 py-1 hover:bg-fuchsia-400 text-white rounded">Hapus</button>
+                <button
+                  onClick={() => navigate(`/edit-product/${p.id}`)}
+                  className="bg-yellow-400 px-3 py-1 hover:bg-fuchsia-400 text-white rounded"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(p.id)}
+                  className="bg-red-500 px-3 py-1 hover:bg-fuchsia-400 text-white rounded"
+                >
+                  Hapus
+                </button>
               </td>
             </tr>
           ))}
