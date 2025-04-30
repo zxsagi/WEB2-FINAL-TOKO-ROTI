@@ -3,24 +3,36 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
-  RouterProvider
+  RouterProvider,
 } from "react-router-dom";
+
 import RootLayout from "./layouts/RootLayout";
+import BaseLayout from "./layouts/BaseLayout";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Post from "./pages/Post";
 import Register from "./pages/Register";
-import BaseLayout from "./layouts/BaseLayout";
+
+// Import pages yang kamu butuhkan
+import Product from "./pages/Product";
+import ProductDetail from "./pages/ProductDetail";
+import Dashboard from "./pages/Dashboard"; // pastikan file ini ada
+import SalesReport from "./pages/SalesReport"; // pastikan file ini ada
+
 import PrivateRoute from "./utils/PrivateRoute";
 import PublicRoute from "./utils/PublicRoute";
 import { AuthProvider } from "./utils/AuthProvider";
+import AddProduct from "./pages/AddProduct";
+import AddSales from "./pages/AddSales";
+import EditProduct from "./pages/EditProduct";
 
 const queryClient = new QueryClient();
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route>
+      <>
+        {/* Routes dengan RootLayout */}
         <Route path="/" element={<RootLayout />}>
           <Route
             index
@@ -31,14 +43,65 @@ function App() {
             }
           />
           <Route
-            path="posts"
+            path="products"
             element={
               <PrivateRoute>
-                <Post />
+                <Product />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="add-product"
+            element={
+              <PrivateRoute>
+                <AddProduct />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="edit-product/:id"
+            element={
+              <PrivateRoute>
+                <EditProduct />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="products/:id"
+            element={
+              <PrivateRoute>
+                <ProductDetail />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="sales-report"
+            element={
+              <PrivateRoute>
+                <SalesReport />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="add-sales"
+            element={
+              <PrivateRoute>
+                <AddSales />
               </PrivateRoute>
             }
           />
         </Route>
+
+        {/* Routes dengan BaseLayout untuk login/register */}
         <Route path="/" element={<BaseLayout />}>
           <Route
             path="login"
@@ -57,17 +120,16 @@ function App() {
             }
           />
         </Route>
-      </Route>
+      </>
     )
   );
+
   return (
-    <>
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </AuthProvider>
-    </>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }
 

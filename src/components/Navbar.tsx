@@ -9,7 +9,14 @@ import {
   import { NavLink } from "react-router-dom";
   import { useAuth } from "../utils/AuthProvider";
   
-  const navigation = [{ name: "Post", to: "/posts", current: false }];
+  const navigation = [
+	{ name: "Home", to: "/" },
+	{ name: "Produk", to: "/products" },
+	{ name: "Dashboard", to: "/dashboard" },
+	{ name: "Transaksi", to: "/add-sales" },
+	{ name: "Laporan", to: "/sales-report" },
+  ];
+  
   
   function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");

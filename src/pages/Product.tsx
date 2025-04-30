@@ -1,87 +1,58 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "../utils/AxiosInstance";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  thumbnail: string
-}
+const Product: React.FC = () => {
+  const [products, setProducts] = useState<any[]>([]);
+  const navigate = useNavigate();
 
-interface ProductData {
-  products: Product[]
-}
+  const fetchData = () => {
+    fetch("/api/product")
+      .then(res => res.json())
+      .then(data => setProducts(data));
+  };
 
-const fetchProductList = async () => {
-  return await axios.get<ProductData>("/product")
-}
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-const ProductSkeleton = () => {
+  const handleDelete = async (id: number) => {
+    if (confirm("Yakin ingin menghapus produk ini?")) {
+      await fetch(`/api/product/${id}`, { method: "DELETE" });
+      fetchData();
+    }
+  };
+
   return (
-    <div className="group relative">
-      {/* Image Placeholder */}
-      <div className="aspect-square w-full rounded-md bg-gray-200 animate-pulse lg:aspect-auto lg:h-80"></div>
-
-      <div className="mt-4 flex justify-between">
-        {/* Title Placeholder */}
-        <div>
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-          {/* Description Placeholder */}
-          <div className="mt-1 h-3 bg-gray-200 rounded animate-pulse w-2/3"></div>
-        </div>
-        {/* Price Placeholder */}
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-1/4"></div>
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-4xl font-bold text-amber-600">Manajemen Produk</h1>
+        <Link to="/add-product" className="bg-blue-500 hover:bg-fuchsia-400 text-white px-4 py-2 rounded">Tambah Produk</Link>
       </div>
+      <table className="w-full border shadow-lg rounded-lg overflow-hidden">
+        <thead>
+          <tr className="bg-gray-400">
+            <th className="border p-2">Nama</th>
+            <th className="border p-2">Harga</th>
+            <th className="border p-2">Stok</th>
+            <th className="border p-2">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map(p => (
+            <tr key={p.id} className="text-center">
+              <td className="border p-2">{p.nama_produk}</td>
+              <td className="border p-2">Rp {p.harga}</td>
+              <td className="border p-2">{p.stok}</td>
+              <td className="border p-2 space-x-2">
+                <button onClick={() => navigate(`/edit-product/${p.id}`)} className="bg-yellow-400 px-3 py-1 hover:bg-fuchsia-400 text-white rounded">Edit</button>
+                <button onClick={() => handleDelete(p.id)} className="bg-red-500 px-3 py-1 hover:bg-fuchsia-400 text-white rounded">Hapus</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-const Product = () => {
-  const getProductList = useQuery({ queryKey: ["productList"], queryFn: fetchProductList })
-  const navigate = useNavigate();
-  return (
-    <div className="container mx-auto px-4">
-      <button className="fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" onClick={() => navigate("/product/add")}>
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
-        </svg>
-      </button>
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">List of Products</h2>
-          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {getProductList.isFetching ? (Array.from({ length: 4 }).map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))) : (
-              getProductList.data?.data.products.map((product) => (
-                <div key={product.id} className="group relative" onClick={() => navigate(`/product/${product.id}`)}>
-                  <img
-                    alt={product.title}
-                    src={product.thumbnail}
-                    className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
-                  />
-                  <div className="mt-4 flex justify-between">
-                    <div>
-                      <h3 className="text-sm text-gray-700">
-                        <a>
-                          <span aria-hidden="true" className="absolute inset-0" />
-                          {product.title}
-                        </a>
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">{product.description}</p>
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">{product.price}$</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default Product
+export default Product;
