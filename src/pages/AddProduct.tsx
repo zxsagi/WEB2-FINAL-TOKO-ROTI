@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../utils/AxiosInstance";
 
 const AddProduct: React.FC = () => {
   const [form, setForm] = useState({
@@ -16,27 +17,17 @@ const AddProduct: React.FC = () => {
     setError(null);
 
     try {
-      const res = await fetch("/api/product", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nama_produk: form.nama_produk,
-          harga: Number(form.harga),
-          stok: Number(form.stok)
-        })
+      await axios.post("/api/product", {
+        nama_produk: form.nama_produk,
+        harga: Number(form.harga),
+        stok: Number(form.stok)
       });
-
-      if (!res.ok) {
-        const text = await res.text(); // Tangkap response error mentah
-        console.error("❌ RESPON ERROR:", text);
-        throw new Error(text || "Gagal menambahkan produk");
-      }
 
       console.log("✅ PRODUK DITAMBAHKAN");
       navigate("/products");
     } catch (err: any) {
       console.error("❌ ERROR FRONTEND:", err.message);
-      setError(err.message);
+      setError("Gagal menambahkan produk");
     }
   };
 
