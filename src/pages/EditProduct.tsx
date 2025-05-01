@@ -43,8 +43,8 @@ const EditProduct: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Edit Produk</h1>
+    <div className="p-6 max-w-md mt-8 mx-auto">
+      <h1 className="text-4xl text-amber-600 text-center font-bold mb-4">Edit Produk</h1>
       {error && <p className="text-red-500 mb-2">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,7 +52,7 @@ const EditProduct: React.FC = () => {
           type="text"
           value={form.nama_produk}
           onChange={(e) => setForm({ ...form, nama_produk: e.target.value })}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 font-mono border rounded"
           placeholder="Nama Produk"
           required
         />
@@ -60,7 +60,7 @@ const EditProduct: React.FC = () => {
           type="number"
           value={form.harga}
           onChange={(e) => setForm({ ...form, harga: e.target.value })}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 font-mono border rounded"
           placeholder="Harga"
           required
         />
@@ -68,13 +68,13 @@ const EditProduct: React.FC = () => {
           type="number"
           value={form.stok}
           onChange={(e) => setForm({ ...form, stok: e.target.value })}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 font-mono border rounded"
           placeholder="Stok"
           required
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-green-600 hover:bg-fuchsia-400 font-mono text-white px-4 py-2 rounded"
         >
           Simpan Perubahan
         </button>
