@@ -32,8 +32,8 @@ const AddProduct: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Tambah Produk</h1>
+    <div className="p-6 max-w-md mt-8 mx-auto">
+      <h1 className="text-3xl text-center text-amber-600 font-bold mb-4">Tambah Produk</h1>
 
       {error && <p className="text-red-500 mb-2">{error}</p>}
 
@@ -43,7 +43,7 @@ const AddProduct: React.FC = () => {
           placeholder="Nama Produk"
           value={form.nama_produk}
           onChange={e => setForm({ ...form, nama_produk: e.target.value })}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 font-mono border rounded"
           required
         />
         <input
@@ -66,7 +66,7 @@ const AddProduct: React.FC = () => {
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-green-500 font-mono hover:bg-fuchsia-400 text-white px-4 py-2 rounded"
         >
           Simpan
         </button>
